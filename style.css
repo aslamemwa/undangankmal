@@ -1,7 +1,7 @@
 :root {
     --c-ivory: #F8F9FA;
     --c-white: #FFFFFF;
-    --c-beige: #F0F4F8; 
+    --c-beige: #E2E6EB; 
     --c-gold: #C08588; 
     --c-gold-light: #E6D0D2; 
     --c-gold-hover: #A36B6E; 
@@ -97,13 +97,22 @@ p { line-height: 1.6; font-size: 0.95rem; }
 .relative-z { position: relative; z-index: 10; }
 
 /* 2. Hero */
-.hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1.2rem; }
+.hero {  display: flex; align-items: center; justify-content: center; padding: 5rem 1.2rem; }
 .bismillah { font-size: 1.6rem; font-weight: bold; margin-bottom: 1rem; color: var(--c-gold); }
 .quran-verse { font-style: italic; color: var(--c-soft-brown); max-width: 600px; margin: 0 auto; font-size: 0.95rem; }
 
 /* 3. Profiles */
-.profiles { position: relative; background-color: var(--c-beige); z-index: 1; }
-.profiles::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('bunga.png'); background-repeat: no-repeat; background-size: 900px; background-position: center; opacity: 0.4; z-index: -1; pointer-events: none; }
+/* --- FIX: Bikin Section Profil Ikut Melengkung & Numpuk --- */
+.profiles { 
+    background: linear-gradient(135deg, var(--c-beige) 0%, #E8EDF2 100%);
+    border-radius: 40px 40px 0 0; /* Bikin atasnya melengkung oval */
+    margin-top: -40px; /* Ditarik ke atas biar nutupin garis kaku */
+    padding-top: 4rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03); /* Bayangan pemisah */
+    position: relative; 
+    z-index: 1; 
+}
+.profiles::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('hiasan-kiri-atas.png'); background-repeat: no-repeat; background-size: 900px; background-position: center; opacity: 0.4; z-index: -1; pointer-events: none; }
 .couple-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 1.5rem; }
 @media(min-width: 768px) { .couple-grid { grid-template-columns: 1fr 1fr; gap: 3rem; } }
 .profile-card { padding: 2rem 1.5rem; border-radius: 15px; position: relative; overflow: hidden;}
@@ -201,8 +210,22 @@ p { line-height: 1.6; font-size: 0.95rem; }
 .anim.is-visible { opacity: 1; transform: translate(0) scale(1); }
 
 /* Petals & Lainnya */
-.petal { position: fixed; top: -10%; z-index: 9998; pointer-events: none; background: linear-gradient(135deg, var(--c-gold-light) 0%, #ffffff 100%); border-radius: 15px 0px 15px 0px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); opacity: 0.6; animation: fall linear infinite; }
-@keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; } 15% { opacity: 0.8; } 85% { opacity: 0.8; } 100% { transform: translateY(110vh) rotate(720deg) scale(1); opacity: 0; } }
+/* Animasi & Kelopak Bunga (Diterangin) */
+.petal {
+    position: fixed; top: -10%; z-index: 9998; pointer-events: none;
+    background: linear-gradient(135deg, var(--c-gold-light) 0%, #ffffff 100%);
+    border-radius: 15px 0px 15px 0px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* Bayangan ditebelin dikit biar menonjol */
+    opacity: 1; /* Awalnya 0.6, dibikin 1 biar full terang */
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0; }
+    15% { opacity: 1; } /* Awalnya 0.8, naikin ke 1 */
+    85% { opacity: 1; } /* Awalnya 0.8, naikin ke 1 */
+    100% { transform: translateY(110vh) rotate(720deg) scale(1); opacity: 0; }
+}
 @keyframes zoomIn { from { transform: translateY(-50%) scale(0.9); opacity: 0; } to { transform: translateY(-50%) scale(1); opacity: 1; } }
 @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
 @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
@@ -234,3 +257,73 @@ body::after { content: ""; position: fixed; top: 0; left: 0; width: 100vw; heigh
 .developer-credit p { display: flex; align-items: center; justify-content: center; margin: 0; }
 .developer-credit a { color: rgba(255, 255, 255, 0.6); text-decoration: none; font-weight: 500; margin-left: 5px; transition: all 0.4s ease; }
 .developer-credit a:hover { color: var(--c-gold-light); letter-spacing: 3px; }
+
+
+/* =========================================
+   UPGRADE V4: LAYERED CURVED CANVAS & SOFT GRADIENT
+   (Menghilangkan kesan flat dan kaku antar section)
+   ========================================= */
+
+/* 1. Countdown: Dikasih gradasi halus (Ivory ke Putih) & ruang bawah */
+.countdown-section {
+    background: radial-gradient(circle at center, #FFFFFF 0%, var(--c-ivory) 100%);
+    padding-bottom: 6rem; /* Ruang lebih buat ditumpuk section Acara */
+}
+
+/* 2. Acara (Beige): Atasnya melengkung, numpuk ke Countdown */
+.events {
+    background: linear-gradient(135deg, var(--c-beige) 0%, #E8EDF2 100%);
+    border-radius: 40px 40px 0 0; /* Bikin atasnya melengkung */
+    margin-top: -50px; /* Ditarik ke atas biar numpuk section sebelumnya */
+    padding-top: 5rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03); /* Bayangan pemisah */
+    position: relative;
+    z-index: 2;
+}
+
+/* 3. Galeri (Ivory): Melengkung, numpuk ke Acara */
+.gallery {
+    background: linear-gradient(135deg, var(--c-ivory) 0%, #FFFDFB 100%);
+    border-radius: 40px 40px 0 0;
+    margin-top: -50px;
+    padding-top: 5rem;
+    padding-bottom: 6rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03);
+    position: relative;
+    z-index: 3;
+}
+
+/* 4. Kisah Cinta (Beige): Melengkung, numpuk ke Galeri */
+.love-story {
+    background: linear-gradient(135deg, var(--c-beige) 0%, #E8EDF2 100%);
+    border-radius: 40px 40px 0 0;
+    margin-top: -50px;
+    padding-top: 5rem;
+    padding-bottom: 6rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03);
+    position: relative;
+    z-index: 4;
+}
+
+/* 5. Gift (Ivory): Melengkung, numpuk ke Kisah Cinta */
+.gift {
+    background: radial-gradient(circle at top, var(--c-ivory) 0%, #F5F7FA 100%);
+    border-radius: 40px 40px 0 0;
+    margin-top: -50px;
+    padding-top: 5rem;
+    padding-bottom: 6rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03);
+    position: relative;
+    z-index: 5;
+}
+
+/* 6. Ucapan (Beige/Ivory Tumpuk): Melengkung, numpuk ke Gift */
+.wishes {
+    background: linear-gradient(180deg, var(--c-beige) 0%, var(--c-ivory) 100%);
+    border-radius: 40px 40px 0 0;
+    margin-top: -50px;
+    padding-top: 5rem;
+    box-shadow: 0 -15px 30px rgba(0,0,0,0.03);
+    position: relative;
+    z-index: 6;
+}
