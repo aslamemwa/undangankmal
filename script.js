@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Eksekusi Efek Bunga Jatuh
     createPetals();
 
-    // 2. Get Guest Name from URL (?to=Nama+Tamu)
     const urlParams = new URLSearchParams(window.location.search);
     const guestName = urlParams.get('to');
     
@@ -11,24 +9,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('guest-name').innerText = formattedName;
     }
 
-    // 3. Scroll Animation Observer (Animasi jalan TIAP scroll)
+    // UPGRADE 4: Logika Animasi Scroll Beragam (Baca class .anim)
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
+                entry.target.classList.add('is-visible'); 
             } else {
-                // Baris ini yang bikin animasi ke-reset pas lu scroll ke atas
-                entry.target.classList.remove('visible'); 
+                entry.target.classList.remove('is-visible'); 
             }
         });
     }, observerOptions);
 
-    document.querySelectorAll('.slide-up').forEach(el => observer.observe(el));
+    // Pantau semua elemen yang punya class anim
+    document.querySelectorAll('.anim').forEach(el => observer.observe(el));
 
-    // 4. Countdown Timer - Diubah ke Tanggal Akad Malidah & Kusnaidin
+    // Countdown
     const countdownDate = new Date("Jul 26, 2026 10:00:00").getTime();
-    
     const x = setInterval(function() {
         const now = new Date().getTime();
         const distance = countdownDate - now;
@@ -49,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 
-    // 5. Fitur Swipe / Drag to scroll untuk Galeri Foto Horizontal
+    // Horizontal Scroll Gallery
     const galleryScroll = document.querySelector('.gallery-scroll');
     if (galleryScroll) {
         let isDown = false;
@@ -72,44 +69,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         galleryScroll.addEventListener('mousemove', (e) => {
             if (!isDown) return;
-            e.preventDefault(); // cegah blok teks terpilih pas lagi nge-drag
+            e.preventDefault(); 
             const x = e.pageX - galleryScroll.offsetLeft;
-            const walk = (x - startX) * 2; // kecepatan scroll
+            const walk = (x - startX) * 2; 
             galleryScroll.scrollLeft = scrollLeft - walk;
         });
     }
 });
 
-// --- FUNGSI EFEK JATUH KELOPAK BUNGA EKSKLUSIF ---
 function createPetals() {
     const container = document.getElementById('particles-container');
     if (!container) return; 
     
     const petalCount = 20; 
-
     for (let i = 0; i < petalCount; i++) {
         let petal = document.createElement('div');
         petal.classList.add('petal');
-        
-        // Random posisi dan durasi biar jatuhnya natural
-        let startLeft = Math.random() * 100; // 0vw - 100vw
-        let duration = Math.random() * 8 + 8; // 8s - 16s
+        let startLeft = Math.random() * 100; 
+        let duration = Math.random() * 8 + 8; 
         let delay = Math.random() * 10; 
-        
-        // Ukuran kecil biar elegan (kayak bunga asli)
-        let size = Math.random() * 8 + 10; // 10px - 18px
+        let size = Math.random() * 8 + 10; 
         
         petal.style.left = startLeft + 'vw';
         petal.style.width = size + 'px';
         petal.style.height = size + 'px';
         petal.style.animationDuration = duration + 's';
         petal.style.animationDelay = delay + 's';
-        
         container.appendChild(petal);
     }
 }
 
-// --- FUNGSI OPEN INVITATION & MUSIC ---
 let isPlaying = false;
 const bgMusic = document.getElementById('bg-music');
 const musicCtrl = document.getElementById('music-control');
@@ -117,15 +106,11 @@ const musicCtrl = document.getElementById('music-control');
 function openInvitation() {
     document.getElementById('cover').style.transform = 'translateY(-100vh)';
     document.body.classList.remove('locked');
-    
-    // Play Music
     bgMusic.play().then(() => {
         isPlaying = true;
-        musicCtrl.style.display = 'block'; // Tombolnya muncul di sini
-        musicCtrl.style.animationPlayState = 'running'; // Animasinya muter
+        musicCtrl.style.display = 'block'; 
+        musicCtrl.style.animationPlayState = 'running'; 
     }).catch(error => console.log("Auto-play prevented by browser"));
-
-    // Tampilkan tombol auto-scroll
     document.getElementById('autoscroll-control').style.display = 'block';
 }
 
@@ -133,16 +118,15 @@ function toggleMusic() {
     if (isPlaying) {
         bgMusic.pause();
         musicCtrl.style.animationPlayState = 'paused';
-        musicCtrl.innerHTML = '<i class="fas fa-volume-mute"></i>'; // Icon berubah jadi mute
+        musicCtrl.innerHTML = '<i class="fas fa-volume-mute"></i>'; 
     } else {
         bgMusic.play();
         musicCtrl.style.animationPlayState = 'running';
-        musicCtrl.innerHTML = '<i class="fas fa-music"></i>'; // Icon berubah jadi nada
+        musicCtrl.innerHTML = '<i class="fas fa-music"></i>'; 
     }
     isPlaying = !isPlaying;
 }
 
-// --- FUNGSI AUTO SCROLL (BARU) ---
 let isAutoScrolling = false;
 let autoScrollInterval;
 
@@ -156,85 +140,59 @@ function toggleAutoScroll() {
     } else {
         autoScrollInterval = setInterval(() => {
             window.scrollBy(0, 1);
-        }, 20); // Kecepatan scroll
+        }, 20); 
         btn.innerHTML = '<i class="fas fa-pause"></i> Stop Scroll';
         btn.style.background = 'var(--c-gold-hover)';
     }
     isAutoScrolling = !isAutoScrolling;
 }
 
-// Hentikan auto-scroll kalau tamu scroll layarnya secara manual
 ['wheel', 'touchmove'].forEach(evt => {
     window.addEventListener(evt, () => {
         if(isAutoScrolling) toggleAutoScroll();
     }, { passive: true });
 });
 
-// --- FUNGSI LIGHTBOX GALLERY ---
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 
-function openLightbox(src) {
-    lightbox.style.display = "block";
-    lightboxImg.src = src;
-}
-function closeLightbox() {
-    lightbox.style.display = "none";
-}
+function openLightbox(src) { lightbox.style.display = "block"; lightboxImg.src = src; }
+function closeLightbox() { lightbox.style.display = "none"; }
 
-// --- FUNGSI COPY REKENING & DOWNLOAD QRIS ---
 function copyRekening(elementId) {
     const textToCopy = document.getElementById(elementId).innerText;
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // Tampilkan pesan khusus untuk copy rekening
         showToast("Nomor rekening berhasil disalin ✨");
     });
 }
 
-function downloadQRIS() {
-    // Fungsi ini bikin browser otomatis download gambar QRIS ke HP tamu
-    const link = document.createElement('a');
-    link.href = 'gambar-qris-lo.png'; // NAMA FILE GAMBAR HARUS SAMA KAYAK DI HTML
-    link.download = 'QRIS_Pernikahan.png'; // Nama file pas ke-download di HP
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Tampilkan pesan khusus untuk download QRIS
-    showToast("QRIS berhasil disimpan ke galeri ✨");
-}
-
 function showToast(message) {
     const toast = document.getElementById("toast");
-    toast.innerText = message; // Teksnya sekarang dinamis menyesuaikan aksi
+    toast.innerText = message; 
     toast.className = "toast show";
     setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
 }
 
-// --- DATABASE FORM UCAPAN (GOOGLE SHEETS) ---
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxLegGcO07uyO4UtePWFiTYXbndf9rhXpAHbXpGr3cHdunKDRthyOu9qaP8dIkDPIcN-A/exec'; 
+// DATABASE GOOGLE SHEETS LU 
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxLegGc007uyO4UtePWFiTYXbndf9rhXpAHbXpGr3cHdunKDRthyOu9qaP8dIkDPIcN-A/exec'; 
 
 const form = document.getElementById('wish-form');
 const wishesList = document.getElementById('wishes-list');
 const submitBtn = form.querySelector('button[type="submit"]');
 
-// 1. Fungsi untuk narik semua komentar dari Google Sheets
 function loadComments() {
     wishesList.innerHTML = '<p class="text-center" style="font-size:0.9rem; color:var(--c-soft-brown);">Memuat ucapan... <i class="fas fa-spinner fa-spin"></i></p>';
-    
     fetch(scriptURL)
         .then(response => response.json())
         .then(data => {
-            wishesList.innerHTML = ''; // Kosongkan loading
+            wishesList.innerHTML = ''; 
             if (data.length === 0) {
                 wishesList.innerHTML = '<p class="text-center" style="font-size:0.9rem; color:var(--c-soft-brown);">Belum ada ucapan. Jadilah yang pertama!</p>';
                 return;
             }
-            
-            // Tampilkan setiap ucapan
             data.forEach(item => {
                 const wishHTML = `
-                    <div class="wish-card visible">
+                    <div class="wish-card">
                         <h4>${item.nama}</h4>
                         <p class="time">${item.waktu}</p>
                         <p>${item.ucapan}</p>
@@ -249,29 +207,23 @@ function loadComments() {
         });
 }
 
-// Panggil fungsi memuat komentar saat website pertama kali dibuka
 loadComments();
 
-// 2. Fungsi untuk ngirim komentar baru ke Google Sheets
 form.addEventListener('submit', e => {
     e.preventDefault();
-    
-    // Ubah tombol jadi mode loading
     submitBtn.innerHTML = 'Mengirim... <i class="fas fa-spinner fa-spin"></i>';
     submitBtn.disabled = true;
 
-    // Siapkan data yang mau dikirim
     const formData = new FormData();
     formData.append('nama', document.getElementById('sender-name').value);
     formData.append('ucapan', document.getElementById('sender-msg').value);
 
-    // Kirim data ke Google Sheets
     fetch(scriptURL, { method: 'POST', body: formData})
         .then(response => {
             submitBtn.innerHTML = 'Kirim Ucapan';
             submitBtn.disabled = false;
-            form.reset(); // Kosongin form
-            loadComments(); // Refresh daftar komentar otomatis
+            form.reset(); 
+            loadComments(); 
             showToast("Ucapan berhasil terkirim ✨");
         })
         .catch(error => {
