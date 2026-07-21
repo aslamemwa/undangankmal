@@ -142,7 +142,7 @@ function toggleMusic() {
     isPlaying = !isPlaying;
 }
 
-// --- FUNGSI AUTO SCROLL ---
+// --- FUNGSI AUTO SCROLL (BARU) ---
 let isAutoScrolling = false;
 let autoScrollInterval;
 
@@ -151,13 +151,13 @@ function toggleAutoScroll() {
     
     if (isAutoScrolling) {
         clearInterval(autoScrollInterval);
-        btn.innerHTML = '<i class="fas fa-arrow-down"></i>';
+        btn.innerHTML = '<i class="fas fa-play"></i> Auto Scroll';
         btn.style.background = 'var(--c-gold)';
     } else {
         autoScrollInterval = setInterval(() => {
             window.scrollBy(0, 1);
-        }, 20); // Kecepatan scroll (makin kecil makin cepet)
-        btn.innerHTML = '<i class="fas fa-pause"></i>';
+        }, 20); // Kecepatan scroll
+        btn.innerHTML = '<i class="fas fa-pause"></i> Stop Scroll';
         btn.style.background = 'var(--c-gold-hover)';
     }
     isAutoScrolling = !isAutoScrolling;
