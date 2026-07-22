@@ -118,12 +118,12 @@ function openInvitation() {
     // 3. Tampilkan tombol kontrol scroll
     document.getElementById('autoscroll-control').style.display = 'block';
 
-    // 4. AUTO-SCROLL PROFESIONAL (Jeda 0.4 detik langsung gass!)
+    // 4. AUTO-SCROLL PROFESIONAL (Jeda 800ms)
     setTimeout(() => {
         if (!isAutoScrolling) {
             toggleAutoScroll();
         }
-    }, 1500); // <-- 400ms biar sat-set
+    }, 800); 
 }
 
 function toggleMusic() {
@@ -140,31 +140,38 @@ function toggleMusic() {
 }
 
 // ==========================================
-// AUTO-SCROLL CROSS-BROWSER OPTIMIZATION
+// AUTO-SCROLL KELAS PROFESIONAL (TIME-BASED / DELTA TIME)
 // ==========================================
 let isAutoScrolling = false;
 let scrollAnimation;
+let lastTime = 0;
+const SCROLL_SPEED = 55; // Kecepatan scroll (px/detik)
 
-// Fungsi mesin penggeraknya (sync dengan refresh rate layar)
-function autoScrollStep() {
-    if (isAutoScrolling) {
-        window.scrollBy(0, 1); // Angka 1.5 ini kecepatan turunnya. (Makin gede makin ngebut)
-        scrollAnimation = requestAnimationFrame(autoScrollStep);
-    }
+function autoScrollStep(currentTime) {
+    if (!isAutoScrolling) return;
+
+    if (!lastTime) lastTime = currentTime;
+    const deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
+    const scrollDistance = (SCROLL_SPEED * deltaTime) / 1000;
+    
+    window.scrollBy(0, scrollDistance);
+    scrollAnimation = requestAnimationFrame(autoScrollStep);
 }
 
 function toggleAutoScroll() {
     const btn = document.getElementById('autoscroll-control');
     
     if (isAutoScrolling) {
-        // Matikan scroll
         isAutoScrolling = false;
         cancelAnimationFrame(scrollAnimation);
+        lastTime = 0; 
         btn.innerHTML = '<i class="fas fa-play"></i> Auto Scroll';
         btn.style.background = 'var(--c-gold)';
     } else {
-        // Nyalakan scroll
         isAutoScrolling = true;
+        lastTime = 0; 
         scrollAnimation = requestAnimationFrame(autoScrollStep);
         btn.innerHTML = '<i class="fas fa-pause"></i> Stop Scroll';
         btn.style.background = 'var(--c-gold-hover)';
